@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     {% load static %}
+    {% load static %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <meta charset="UTF-8">
+    <title>{{ course.name }}</title>
 </head>
 
 <body>
@@ -14,7 +15,7 @@
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <div class="navbar-header">
-                  <a class="navbar-brand" href="{% url 'onlinecourse:index' %}">Home</a>
+                <a class="navbar-brand" href="{% url 'onlinecourse:index' %}">Home</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
@@ -28,48 +29,20 @@
                         {% csrf_token %}
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Username" name="username" >
-                            <input type="password" class="form-control" placeholder="Username" name="psw" >
-                            <button class="btn btn-primary" type="submit">Login</button>
-                            <a class="btn btn-link" href="{% url 'onlinecourse:registration' %}">Sign Up</a>
-                        </div>
-                    </form>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
+                            <input type="password" class="form-control" placeholder="Password" name="psw" >
+                            <button class="btn btn-primary" type="Để nâng điểm từ **8/15 lên 15/15 (100%)**, bạn chỉ cần sửa trực tiếp trên GitHub của mình (`phamhoangbach3101-web/Django-Cloud-App-with-Database`) theo đúng những chỗ AI Grader vừa chấm thiếu. Bạn chỉ cần bấm nút **Edit (hình cây bút)** ở từng file trên GitHub rồi chỉnh sửa như sau:
 
-    <!-- Page content -->
-    {% if user.is_authenticated %}
-    </br>
-    <button class="btn btn-primary btn-block" data-toggle="collapse" data-target="#exam">Start Exam</button>
-    <div id="exam" class="collapse">
-        <form 
-            id="questionform" 
-            action="{% url 'onlinecourse:submit' course.id %}"
-            method="POST"
-        >
-            {% for question in course.question_set.all %}
-            <div class="card mt-1">
-                <div class="card-header">
-                    <h5>{{ question.content }}</h5>
-                </div>
-                {% csrf_token %}
-                <div class="form-group">
-                    {% for choice in question.choice_set.all %}
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="checkbox" name="choice_{{choice.id}}" class="form-check-input"
-                                id="{{choice.id}}" value="{{choice.id}}">{{ choice.content }}
-                        </label>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endfor %}
-            <input class="btn btn-success btn-block" type="submit" value="Submit">
-        </form>
-    </div>
-    {% endif %}
-</body>
-</html>
+---
+
+### 1. Sửa Question 1 (`onlinecourse/models.py`) — Để lấy 3/3 điểm
+* **Mở link:** `https://github.com/phamhoangbach3101-web/Django-Cloud-App-with-Database/blob/main/onlinecourse/models.py`
+* **Lý do mất điểm:** Class `Submission` thiếu phương thức `__str__`.
+* **Cách sửa:** Bấm hình cây bút (Edit), kéo xuống cuối file chỗ `class Submission(models.Model):`, thêm hàm `__str__` vào bên trong class đó:
+
+```python
+class Submission(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    choices = models.ManyToManyField(Choice)
+
+    def __str__(self):
+        return f"Submission {self.id}"
