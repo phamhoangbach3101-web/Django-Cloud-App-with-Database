@@ -138,12 +138,17 @@ def show_exam_result(request, course_id, submission_id):
     course = get_object_or_404(Course, pk=course_id)
     submission = Submission.objects.get(id=submission_id)
     choices = submission.choices.all()
+    selected_ids = [choice.id for choice in choices]
+
     total_score = 0
-    for choice in choices:
-        if choice.is_correct:
-            total_score += choice.question.grade
+    for question in course.question_set.all():
+        if question.is_get_score(selected_ids):
+            total_score += question.grade
+
     context['course'] = course
     context['grade'] = total_score
     context['choices'] = choices
+    context['selected_ids'] = selected_ids
+
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
